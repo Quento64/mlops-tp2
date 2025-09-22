@@ -1,10 +1,2 @@
-streamlit
-joblib
-fastapi
+mlflow
 fastapi[standard]
-pydantic
-requests
-pandas
-scikit-learn
-transformers
-torch

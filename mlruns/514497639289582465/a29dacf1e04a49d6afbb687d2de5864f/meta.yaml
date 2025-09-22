@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/514497639289582465/a29dacf1e04a49d6afbb687d2de5864f/artifacts
+end_time: 1757946100761
+entry_point_name: ''
+experiment_id: '514497639289582465'
+lifecycle_stage: active
+run_id: a29dacf1e04a49d6afbb687d2de5864f
+run_name: bemused-smelt-512
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1757946092456
+status: 3
+tags: []
+user_id: quentin

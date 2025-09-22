@@ -1,0 +1,14 @@
+artifact_uri: mlflow-artifacts:/514497639289582465/f87ca98357554c7591792db80b8a70c8/artifacts
+end_time: 1757946228481
+entry_point_name: ''
+experiment_id: '514497639289582465'
+lifecycle_stage: active
+run_id: f87ca98357554c7591792db80b8a70c8
+run_name: nebulous-boar-118
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1757946218588
+status: 3
+tags: []
+user_id: quentin

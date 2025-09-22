@@ -1,0 +1,10 @@
+artifact_location: mlflow-artifacts:/514497639289582465/models/m-64c535accb864783860a976b7ff82f55/artifacts
+creation_timestamp: 1757946220164
+experiment_id: '514497639289582465'
+last_updated_timestamp: 1757946227998
+model_id: m-64c535accb864783860a976b7ff82f55
+model_type: ''
+name: whine_quality_model
+source_run_id: f87ca98357554c7591792db80b8a70c8
+status: 2
+status_message: null
