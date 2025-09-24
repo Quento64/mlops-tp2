@@ -1,10 +1,12 @@
-FROM ghcr.io/mlflow/mlflow:v2.1.1
+FROM python:3.12
 
-ARG APP_HOME=/opt/deployment
+WORKDIR /app
 
-ENV APP_HOME=${APP_HOME}
-COPY start-server.sh ${APP_HOME}/
+COPY requirements.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-RUN chmod a+x ${APP_HOME}/start-server.sh
+COPY server.py server.py
 
-ENTRYPOINT ["/opt/deployment/start-server.sh"]
+EXPOSE 5000
+
+CMD ["fastapi",  "dev", "server.py"]

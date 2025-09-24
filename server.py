@@ -1,6 +1,7 @@
 import mlflow
 from fastapi import FastAPI
 from pydantic import BaseModel
+import pandas as pd
 
 app = FastAPI()
 mlflow.set_tracking_uri('http://localhost:5000')
@@ -29,11 +30,23 @@ def root():
 
 @app.post("/predict")
 def predict(data: WineInput):
-    quality = model[0].predict([
-        [data.fixed_acidity, data.volatile_acidity, data.citric_acid,
-         data.residual_sugar, data.chlorides, data.free_sulfur_dioxide,
-         data.total_sulfur_dioxide, data.density, data.pH, data.sulphates, data.alcohol]
-                            ])
+    data_dict = {
+        "fixed_acidity": data.fixed_acidity,
+        "volatile_acidity": data.volatile_acidity,
+        "citric_acid": data.citric_acid,
+        "residual_sugar": data.residual_sugar,
+        "chlorides": data.chlorides,
+        "free_sulfur_dioxide": data.free_sulfur_dioxide,
+        "total_sulfur_dioxide": data.total_sulfur_dioxide,
+        "density": data.density,
+        "pH": data.pH,
+        "sulphates": data.sulphates,
+        "alcohol": data.alcohol,
+        "quality": 0
+    }
+
+    df = pd.DataFrame(data_dict)
+    quality = model[0].predict(df)
     return {"quality": quality[0]}
 
 @app.post("/update-model")
