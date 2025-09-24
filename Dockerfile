@@ -2,11 +2,10 @@ FROM python:3.12
 
 WORKDIR /app
 
-COPY requirements.txt requirements.txt
+COPY requirements.txt .
+
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY server.py server.py
+COPY server.py .
 
-EXPOSE 5000
-
-CMD ["fastapi",  "dev", "server.py"]
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "8000"]

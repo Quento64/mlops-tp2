@@ -1,21 +1,28 @@
 import mlflow
 from fastapi import FastAPI
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import pandas as pd
+import numpy as np
 
 app = FastAPI()
-mlflow.set_tracking_uri('http://localhost:5000')
+mlflow.set_tracking_uri("http://localhost:5000")
 
-model = [None]
+class ServerData():
+    def __init__(self):
+        self.current_model = None
+        self.next_model = None
+        self.proba = 0.8
+
+server_data = ServerData()
 
 class WineInput(BaseModel):
-    fixed_acidity: float
-    volatile_acidity: float
-    citric_acid: float
-    residual_sugar: float
+    fixed_acidity: float = Field(..., alias="fixed acidity")
+    volatile_acidity: float = Field(..., alias="volatile acidity")
+    citric_acid: float = Field(..., alias="citric acid")
+    residual_sugar: float = Field(..., alias="residual sugar")
     chlorides: float
-    free_sulfur_dioxide: float
-    total_sulfur_dioxide: float
+    free_sulfur_dioxide: float = Field(..., alias="free sulfur dioxide")
+    total_sulfur_dioxide: float = Field(..., alias="total sulfur dioxide")
     density: float
     pH: float
     sulphates: float
@@ -30,26 +37,20 @@ def root():
 
 @app.post("/predict")
 def predict(data: WineInput):
-    data_dict = {
-        "fixed_acidity": data.fixed_acidity,
-        "volatile_acidity": data.volatile_acidity,
-        "citric_acid": data.citric_acid,
-        "residual_sugar": data.residual_sugar,
-        "chlorides": data.chlorides,
-        "free_sulfur_dioxide": data.free_sulfur_dioxide,
-        "total_sulfur_dioxide": data.total_sulfur_dioxide,
-        "density": data.density,
-        "pH": data.pH,
-        "sulphates": data.sulphates,
-        "alcohol": data.alcohol,
-        "quality": 0
-    }
+    df = pd.DataFrame([data.model_dump(by_alias=True)])
 
-    df = pd.DataFrame(data_dict)
-    quality = model[0].predict(df)
-    return {"quality": quality[0]}
+    if np.random.rand() > server_data.proba and server_data.next_model != None:
+        quality = server_data.next_model.predict(df)
+    else:
+        quality = server_data.current_model.predict(df)
+    return {"quality": float(quality[0])}
 
 @app.post("/update-model")
 def update_model(data: ModelInput):
-    model[0] = mlflow.pyfunc.load_model(data.model)
-    return {"message": "Model updated."}
+    server_data.next_model = mlflow.pyfunc.load_model(data.model)
+    return {"message": "Next model updated."}
+
+@app.post("/accept-next-model")
+def accept_next_model():
+    server_data.current_model = server_data.next_model
+    return {"message": "Current model updated."}

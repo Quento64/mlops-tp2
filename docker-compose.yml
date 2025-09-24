@@ -1,0 +1,5 @@
+services:
+  web:
+    build: .
+    container_name: fastapi-server
+    network_mode: host
