@@ -7,6 +7,7 @@ import numpy as np
 app = FastAPI()
 mlflow.set_tracking_uri("http://localhost:5000")
 
+# Store data for our server
 class ServerData():
     def __init__(self):
         self.current_model = None
@@ -37,8 +38,12 @@ def root():
 
 @app.post("/predict")
 def predict(data: WineInput):
+    """
+    Takes a WineInput as argument and uses the model to make the prediction.
+    """
     df = pd.DataFrame([data.model_dump(by_alias=True)])
 
+    # If another model is set up, use canary deployment to call it
     if np.random.rand() > server_data.proba and server_data.next_model != None:
         quality = server_data.next_model.predict(df)
     else:
@@ -47,10 +52,18 @@ def predict(data: WineInput):
 
 @app.post("/update-model")
 def update_model(data: ModelInput):
+    """
+    Takes a ModelInput and update the next model.
+    This model will now be used by the *predict* endpoint.
+    """
     server_data.next_model = mlflow.pyfunc.load_model(data.model)
     return {"message": "Next model updated."}
 
 @app.post("/accept-next-model")
 def accept_next_model():
+    """
+    The next model has been tested and accepted.
+    It now becomes the main model.
+    """
     server_data.current_model = server_data.next_model
     return {"message": "Current model updated."}

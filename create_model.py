@@ -7,6 +7,10 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 
 def create_model():
+    """
+    Our model will be used to predict the quality of white wine.
+    It is a simple LogisticRegression from sklearn.
+    """
     X = pd.read_csv("winequality-white.csv", sep=';')
     y = X['quality']
     X = X.drop(columns='quality')
